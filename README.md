@@ -44,7 +44,7 @@ Example-02 is more complete and offers a better user experience, with this examp
 - file upload button
 - progress of file upload after clicking the upload button
 - HTML code in page.h file
-- FatFS (see images)
+- FatFS (see images) more info [here](https://mischianti.org/esp32-integrated-ffat-fat-exfat-filesystem-6/)
 
 <p align="center">
     <img src="https://raw.githubusercontent.com/rtek1000/esp32-asyncwebserver-fileupload-example/master/example-03/images/example-03-image-01.png" width="200">
