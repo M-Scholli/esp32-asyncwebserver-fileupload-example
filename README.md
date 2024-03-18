@@ -63,7 +63,7 @@ Example-02 is more complete and offers a better user experience, with this examp
 - file upload button
 - reboot esp32 button
 - all done on a single web page that updates webpage elements using javascript
-- FatFS ( more info [here](https://mischianti.org/esp32-integrated-ffat-fat-exfat-filesystem-6/))
+- FatFS (more info [here](https://mischianti.org/esp32-integrated-ffat-fat-exfat-filesystem-6/))
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/smford/esp32-asyncwebserver-fileupload-example/master/example-02/images/example-02-image-01.png" width="200">
