@@ -1,6 +1,6 @@
 # esp32-asyncwebserver-fileupload-example
 
-This is hopefully a simple example to demonstrate how to upload a file to an ESP32 using the AsyncWebServer, saving the files on to SPIFFS and having a simple upload progress bar displaced.
+This is hopefully a simple example to demonstrate how to upload a file to an ESP32 using the AsyncWebServer, saving the files on to SPIFFS/FATFS and having a simple upload progress bar displaced.
 
 There are various instructions around the place, but they were all confusing and it took a long time to figure out what was needed, I hope these examples help someone.
 
@@ -8,6 +8,7 @@ There are various instructions around the place, but they were all confusing and
 - single webpage
 - file listing button
 - file upload button
+- SPIFFS
 
 Example-02 is more complete and offers a better user experience, with this example there is no progress of file upload after clicking the upload button.
 
@@ -26,6 +27,7 @@ Example-02 is more complete and offers a better user experience, with this examp
 - file upload button
 - reboot esp32 button
 - all done on a single web page that updates webpage elements using javascript
+- SPIFFS
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/smford/esp32-asyncwebserver-fileupload-example/master/example-02/images/example-02-image-01.png" width="200">
