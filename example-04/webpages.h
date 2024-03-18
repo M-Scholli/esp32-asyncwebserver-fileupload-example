@@ -26,7 +26,7 @@ function logoutButton() {
   setTimeout(function(){ window.open("/logged-out","_self"); }, 1000);
 }
 function rebootButton() {
-  document.getElementById("statusdetails").innerHTML = "Invoking Reboot ...";
+  document.getElementById("details").innerHTML = "Invoking Reboot ...";
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "/reboot", true);
   xhr.send();
