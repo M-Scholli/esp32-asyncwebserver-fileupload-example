@@ -35,3 +35,18 @@ Example-02 is more complete and offers a better user experience, with this examp
 </p>
 
 ---
+
+## Example 3 - Single Webpage, File Listing, Simple Upload with Progress Bar
+- single webpage
+- file listing button
+- file upload button
+- progress of file upload after clicking the upload button
+- HTML code in page.h file
+- FatFS (see images)
+
+<p align="center">
+
+  
+</p>
+
+---
