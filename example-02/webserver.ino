@@ -16,6 +16,8 @@ String processor(const String& var) {
   if (var == "TOTALSPIFFS") {
     return humanReadableSize(SPIFFS.totalBytes());
   }
+
+  return String();
 }
 
 void configureWebServer() {
