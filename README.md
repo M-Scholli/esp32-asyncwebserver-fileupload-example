@@ -45,8 +45,9 @@ Example-02 is more complete and offers a better user experience, with this examp
 - FatFS (see images)
 
 <p align="center">
-
-  
+    <img src="https://raw.githubusercontent.com/rtek1000/esp32-asyncwebserver-fileupload-example/master/example-03/images/example-03-image-01.png" width="200">
+    <img src="https://raw.githubusercontent.com/rtek1000/esp32-asyncwebserver-fileupload-example/master/example-03/images/example-03-image-02.png" width="200">
+    <img src="https://raw.githubusercontent.com/rtek1000/esp32-asyncwebserver-fileupload-example/master/example-03/images/example-03-image-03.png" width="200">
 </p>
 
 ---
