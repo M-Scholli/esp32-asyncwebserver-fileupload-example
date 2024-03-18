@@ -54,7 +54,9 @@ Example-02 is more complete and offers a better user experience, with this examp
 
 ---
 
-## Example 4 (Same as Example 2, but FatFS) - Single Webpage, Authentication, File Management, Upload with Progress Bar
+## Example 4 - Single Webpage, Authentication, File Management, Upload with Progress Bar
+(Same as Example 2, but FatFS)
+
 - web page authentication
 - single webpage
 - file listing button
