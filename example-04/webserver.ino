@@ -1,20 +1,20 @@
 // parses and processes webpages
 // if the webpage has %SOMETHING% or %SOMETHINGELSE% it will replace those strings with the ones defined
-String processor(const String& var) {
+String processor(const String &var) {
   if (var == "FIRMWARE") {
     return FIRMWARE_VERSION;
   }
 
-  if (var == "FREESPIFFS") {
-    return humanReadableSize((SPIFFS.totalBytes() - SPIFFS.usedBytes()));
+  if (var == "FREEFFat") {
+    return humanReadableSize(FFat.freeBytes());
   }
 
-  if (var == "USEDSPIFFS") {
-    return humanReadableSize(SPIFFS.usedBytes());
+  if (var == "USEDFFat") {
+    return humanReadableSize(FFat.usedBytes());
   }
 
-  if (var == "TOTALSPIFFS") {
-    return humanReadableSize(SPIFFS.totalBytes());
+  if (var == "TOTALFFat") {
+    return humanReadableSize(FFat.totalBytes());
   }
 
   return String();
@@ -30,20 +30,20 @@ void configureWebServer() {
   server->onFileUpload(handleUpload);
 
   // visiting this page will cause you to be logged out
-  server->on("/logout", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server->on("/logout", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->requestAuthentication();
     request->send(401);
   });
 
   // presents a "you are now logged out webpage
-  server->on("/logged-out", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server->on("/logged-out", HTTP_GET, [](AsyncWebServerRequest *request) {
     String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
     Serial.println(logmessage);
     request->send_P(401, "text/html", logout_html, processor);
   });
 
-  server->on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
-    String logmessage = "Client:" + request->client()->remoteIP().toString() + + " " + request->url();
+  server->on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    String logmessage = "Client:" + request->client()->remoteIP().toString() + +" " + request->url();
 
     if (checkUserWebAuth(request)) {
       logmessage += " Auth: Success";
@@ -54,10 +54,9 @@ void configureWebServer() {
       Serial.println(logmessage);
       return request->requestAuthentication();
     }
-
   });
 
-  server->on("/reboot", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server->on("/reboot", HTTP_GET, [](AsyncWebServerRequest *request) {
     String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
 
     if (checkUserWebAuth(request)) {
@@ -72,8 +71,7 @@ void configureWebServer() {
     }
   });
 
-  server->on("/listfiles", HTTP_GET, [](AsyncWebServerRequest * request)
-  {
+  server->on("/listfiles", HTTP_GET, [](AsyncWebServerRequest *request) {
     String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
     if (checkUserWebAuth(request)) {
       logmessage += " Auth: Success";
@@ -86,7 +84,7 @@ void configureWebServer() {
     }
   });
 
-  server->on("/file", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server->on("/file", HTTP_GET, [](AsyncWebServerRequest *request) {
     String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
     if (checkUserWebAuth(request)) {
       logmessage += " Auth: Success";
@@ -98,17 +96,17 @@ void configureWebServer() {
 
         logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url() + "?name=" + String(fileName) + "&action=" + String(fileAction);
 
-        if (!SPIFFS.exists(String('/') + fileName)) {
+        if (!FFat.exists(String('/') + fileName)) {
           Serial.println(logmessage + " ERROR: file does not exist");
           request->send(400, "text/plain", "ERROR: file does not exist");
         } else {
           Serial.println(logmessage + " file exists");
           if (strcmp(fileAction, "download") == 0) {
             logmessage += " downloaded";
-            request->send(SPIFFS, String('/') + fileName, "application/octet-stream");
+            request->send(FFat, String('/') + fileName, "application/octet-stream");
           } else if (strcmp(fileAction, "delete") == 0) {
             logmessage += " deleted";
-            SPIFFS.remove(String('/') + fileName);
+            FFat.remove(String('/') + fileName);
             request->send(200, "text/plain", "Deleted File: " + String(fileName));
           } else {
             logmessage += " ERROR: invalid action param supplied";
@@ -134,7 +132,7 @@ void notFound(AsyncWebServerRequest *request) {
 }
 
 // used by server.on functions to discern whether a user has the correct httpapitoken OR is authenticated by username and password
-bool checkUserWebAuth(AsyncWebServerRequest * request) {
+bool checkUserWebAuth(AsyncWebServerRequest *request) {
   bool isAuthenticated = false;
 
   if (request->authenticate(config.httpuser.c_str(), config.httppassword.c_str())) {
@@ -154,7 +152,7 @@ void handleUpload(AsyncWebServerRequest *request, String filename, size_t index,
     if (!index) {
       logmessage = "Upload Start: " + String(filename);
       // open the file on first call and store the file handle in the request object
-      request->_tempFile = SPIFFS.open("/" + filename, "w");
+      request->_tempFile = FFat.open("/" + filename, "w");
       Serial.println(logmessage);
     }
 

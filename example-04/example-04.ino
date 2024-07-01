@@ -1,8 +1,10 @@
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include <SPIFFS.h>
 #include "webpages.h"
+
+#include "FS.h"
+#include "FFat.h"
 
 #define FIRMWARE_VERSION "v0.0.1"
 
@@ -14,17 +16,17 @@ const int default_webserverporthttp = 80;
 
 // configuration structure
 struct Config {
-  String ssid;               // wifi ssid
-  String wifipassword;       // wifi password
-  String httpuser;           // username to access web admin
-  String httppassword;       // password to access web admin
-  int webserverporthttp;     // http port number for web admin
+  String ssid;            // wifi ssid
+  String wifipassword;    // wifi password
+  String httpuser;        // username to access web admin
+  String httppassword;    // password to access web admin
+  int webserverporthttp;  // http port number for web admin
 };
 
 // variables
-Config config;                        // configuration
-bool shouldReboot = false;            // schedule a reboot
-AsyncWebServer *server;               // initialise webserver
+Config config;              // configuration
+bool shouldReboot = false;  // schedule a reboot
+AsyncWebServer *server;     // initialise webserver
 
 // function defaults
 String listFiles(bool ishtml = false);
@@ -32,21 +34,38 @@ String listFiles(bool ishtml = false);
 void setup() {
   Serial.begin(115200);
 
-  Serial.print("Firmware: "); Serial.println(FIRMWARE_VERSION);
+  delay(1000);
+
+  Serial.print("Firmware: ");
+  Serial.println(FIRMWARE_VERSION);
 
   Serial.println("Booting ...");
 
-  Serial.println("Mounting SPIFFS ...");
-  if (!SPIFFS.begin(true)) {
-    // if you have not used SPIFFS before on a ESP32, it will show this error.
-    // after a reboot SPIFFS will be configured and will happily work.
-    Serial.println("ERROR: Cannot mount SPIFFS, Rebooting");
-    rebootESP("ERROR: Cannot mount SPIFFS, Rebooting");
+  Serial.println("Mounting FatFS ...");
+
+  //   Serial.println("FatFS, formatting");
+  // #warning "WARNING ALL DATA WILL BE LOST: FFat.format()"
+  //   FFat.format();
+
+  if (!FFat.begin()) {
+    // Note: An error occurs when using the ESP32 for the first time, it needs to be formatted
+    //
+    //     Serial.println("ERROR: Cannot mount FatFS, Try formatting");
+    // #warning "WARNING ALL DATA WILL BE LOST: FFat.format()"
+    //     FFat.format();
+
+    if (!FFat.begin()) {
+      Serial.println("ERROR: Cannot mount FatFS, Rebooting");
+      rebootESP("ERROR: Cannot mount FatFS, Rebooting");
+    }
   }
 
-  Serial.print("SPIFFS Free: "); Serial.println(humanReadableSize((SPIFFS.totalBytes() - SPIFFS.usedBytes())));
-  Serial.print("SPIFFS Used: "); Serial.println(humanReadableSize(SPIFFS.usedBytes()));
-  Serial.print("SPIFFS Total: "); Serial.println(humanReadableSize(SPIFFS.totalBytes()));
+  Serial.print("FatFS Free: ");
+  Serial.println(humanReadableSize(FFat.freeBytes()));
+  Serial.print("FatFS Used: ");
+  Serial.println(humanReadableSize(FFat.usedBytes()));
+  Serial.print("FatFS Total: ");
+  Serial.println(humanReadableSize(FFat.totalBytes()));
 
   Serial.println(listFiles());
 
@@ -67,16 +86,27 @@ void setup() {
 
   Serial.println("\n\nNetwork Configuration:");
   Serial.println("----------------------");
-  Serial.print("         SSID: "); Serial.println(WiFi.SSID());
-  Serial.print("  Wifi Status: "); Serial.println(WiFi.status());
-  Serial.print("Wifi Strength: "); Serial.print(WiFi.RSSI()); Serial.println(" dBm");
-  Serial.print("          MAC: "); Serial.println(WiFi.macAddress());
-  Serial.print("           IP: "); Serial.println(WiFi.localIP());
-  Serial.print("       Subnet: "); Serial.println(WiFi.subnetMask());
-  Serial.print("      Gateway: "); Serial.println(WiFi.gatewayIP());
-  Serial.print("        DNS 1: "); Serial.println(WiFi.dnsIP(0));
-  Serial.print("        DNS 2: "); Serial.println(WiFi.dnsIP(1));
-  Serial.print("        DNS 3: "); Serial.println(WiFi.dnsIP(2));
+  Serial.print("         SSID: ");
+  Serial.println(WiFi.SSID());
+  Serial.print("  Wifi Status: ");
+  Serial.println(WiFi.status());
+  Serial.print("Wifi Strength: ");
+  Serial.print(WiFi.RSSI());
+  Serial.println(" dBm");
+  Serial.print("          MAC: ");
+  Serial.println(WiFi.macAddress());
+  Serial.print("           IP: ");
+  Serial.println(WiFi.localIP());
+  Serial.print("       Subnet: ");
+  Serial.println(WiFi.subnetMask());
+  Serial.print("      Gateway: ");
+  Serial.println(WiFi.gatewayIP());
+  Serial.print("        DNS 1: ");
+  Serial.println(WiFi.dnsIP(0));
+  Serial.print("        DNS 2: ");
+  Serial.println(WiFi.dnsIP(1));
+  Serial.print("        DNS 3: ");
+  Serial.println(WiFi.dnsIP(2));
   Serial.println();
 
   // configure web server
@@ -97,15 +127,16 @@ void loop() {
 }
 
 void rebootESP(String message) {
-  Serial.print("Rebooting ESP32: "); Serial.println(message);
+  Serial.print("Rebooting ESP32: ");
+  Serial.println(message);
   ESP.restart();
 }
 
 // list all of the files, if ishtml=true, return html rather than simple text
 String listFiles(bool ishtml) {
   String returnText = "";
-  Serial.println("Listing files stored on SPIFFS");
-  File root = SPIFFS.open("/");
+  Serial.println("Listing files stored on FatFS");
+  File root = FFat.open("/");
   File foundfile = root.openNextFile();
   if (ishtml) {
     returnText += "<table><tr><th align='left'>Name</th><th align='left'>Size</th><th></th><th></th></tr>";
