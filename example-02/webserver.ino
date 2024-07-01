@@ -96,17 +96,17 @@ void configureWebServer() {
 
         logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url() + "?name=" + String(fileName) + "&action=" + String(fileAction);
 
-        if (!SPIFFS.exists(fileName)) {
+        if (!SPIFFS.exists(String('/') + fileName)) {
           Serial.println(logmessage + " ERROR: file does not exist");
           request->send(400, "text/plain", "ERROR: file does not exist");
         } else {
           Serial.println(logmessage + " file exists");
           if (strcmp(fileAction, "download") == 0) {
             logmessage += " downloaded";
-            request->send(SPIFFS, fileName, "application/octet-stream");
+            request->send(SPIFFS, String('/') + fileName, "application/octet-stream");
           } else if (strcmp(fileAction, "delete") == 0) {
             logmessage += " deleted";
-            SPIFFS.remove(fileName);
+            SPIFFS.remove(String('/') + fileName);
             request->send(200, "text/plain", "Deleted File: " + String(fileName));
           } else {
             logmessage += " ERROR: invalid action param supplied";
