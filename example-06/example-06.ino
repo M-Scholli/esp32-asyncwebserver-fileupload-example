@@ -24,6 +24,7 @@ struct Config {
 // variables
 Config config;              // configuration
 bool shouldReboot = false;  // schedule a reboot
+bool shouldUpdate = false;  // schedule a firmware update
 AsyncWebServer *server;     // initialise webserver
 
 // function defaults

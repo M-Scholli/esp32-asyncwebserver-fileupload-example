@@ -13,6 +13,7 @@ const char index_html[] PROGMEM = R"rawliteral(
   <button onclick="rebootButton()">Reboot</button>
   <button onclick="listFilesButton()">List Files</button>
   <button onclick="showUploadButtonFancy()">Upload File</button>
+  <button onclick="updateFirmwareButton()">Update Firmware</button>
   </p>
   <p id="status"></p>
   <p id="detailsheader"></p>
@@ -61,6 +62,13 @@ function showUploadButtonFancy() {
   "<p id=\"loaded_n_total\"></p>" +
   "</form>";
   document.getElementById("details").innerHTML = uploadform;
+}
+function updateFirmwareButton() {
+  document.getElementById("details").innerHTML = "Update Firmware ...";
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "/update", true);
+  xhr.send();
+  window.open("/update","_self");
 }
 function _(el) {
   return document.getElementById(el);
@@ -135,6 +143,37 @@ const char reboot_html[] PROGMEM = R"rawliteral(
 </h3>
 <script type="text/javascript">
   var seconds = 20;
+  function countdown() {
+    seconds = seconds - 1;
+    if (seconds < 0) {
+      window.location = "/";
+    } else {
+      document.getElementById("countdown").innerHTML = seconds;
+      window.setTimeout("countdown()", 1000);
+    }
+  }
+  countdown();
+</script>
+</body>
+</html>
+)rawliteral";
+
+const char update_html[] PROGMEM = R"rawliteral(
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+<h3>
+  Updating the Firmware.  
+</h3>
+  Do not turn off the device!
+  <br />
+  <br />
+  Returning to main page in <span id="countdown">30</span> seconds
+<script type="text/javascript">
+  var seconds = 30;
   function countdown() {
     seconds = seconds - 1;
     if (seconds < 0) {

@@ -55,6 +55,14 @@ void configureWebServer() {
     shouldReboot = true;
   });
 
+  server->on("/update", HTTP_GET, [](AsyncWebServerRequest *request) {
+    String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
+
+    request->send(200, "text/html", update_html);
+    Serial.println(logmessage);
+    shouldUpdate = true;
+  });
+
   server->on("/listfiles", HTTP_GET, [](AsyncWebServerRequest *request) {
     String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
     logmessage += " Auth: Success";
