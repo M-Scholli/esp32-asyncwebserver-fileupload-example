@@ -73,3 +73,24 @@ Example-02 is more complete and offers a better user experience, with this examp
   <img src="https://raw.githubusercontent.com/rtek1000/esp32-asyncwebserver-fileupload-example/master/example-02/images/example-02-image-03.png" width="200">
   <img src="https://raw.githubusercontent.com/rtek1000/esp32-asyncwebserver-fileupload-example/master/example-02/images/example-02-image-04.png" width="200">
 </p>
+
+## Example 5 -Wifi AP, Single Webpage, Authentication, File Management, Upload with Progress Bar
+(Same as Example 4, but it creates an WiFi Access Point)
+
+- creating an WiFi Access Point
+- web page authentication
+- single webpage
+- file listing button
+- file download button
+- file delete button
+- file upload button
+- reboot esp32 button
+- all done on a single web page that updates webpage elements using javascript
+- FatFS (more info [here](https://mischianti.org/esp32-integrated-ffat-fat-exfat-filesystem-6/))
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/rtek1000/esp32-asyncwebserver-fileupload-example/master/example-02/images/example-02-image-01.png" width="200">
+  <img src="https://raw.githubusercontent.com/rtek1000/esp32-asyncwebserver-fileupload-example/master/example-02/images/example-02-image-02.png" width="200">
+  <img src="https://raw.githubusercontent.com/rtek1000/esp32-asyncwebserver-fileupload-example/master/example-02/images/example-02-image-03.png" width="200">
+  <img src="https://raw.githubusercontent.com/rtek1000/esp32-asyncwebserver-fileupload-example/master/example-02/images/example-02-image-04.png" width="200">
+</p>
