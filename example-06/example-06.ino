@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <Update.h>
 #include "webpages.h"
 #include "FS.h"
 #include "FFat.h"
@@ -24,6 +25,7 @@ struct Config {
 // variables
 Config config;              // configuration
 bool shouldReboot = false;  // schedule a reboot
+bool shouldUpdate = false;  // schedule a firmware update
 AsyncWebServer *server;     // initialise webserver
 
 // function defaults
@@ -43,7 +45,7 @@ void setup() {
 
   //   Serial.println("FatFS, formatting");
   // #warning "WARNING ALL DATA WILL BE LOST: FFat.format()"
-  //   FFat.format();
+  //FFat.format();
 
   if (!FFat.begin()) {
     // Note: An error occurs when using the ESP32 for the first time, it needs to be formatted
@@ -110,12 +112,46 @@ void loop() {
   if (shouldReboot) {
     rebootESP("Web Admin Initiated Reboot");
   }
+  if (shouldUpdate) {
+    updateESP("Web Admin Initiated Update");
+  }
 }
 
 void rebootESP(String message) {
   Serial.print("Rebooting ESP32: ");
   Serial.println(message);
   ESP.restart();
+}
+
+void updateESP(String message) {
+  Serial.print("Rebooting ESP32: ");
+  Serial.println(message);
+  File firmware = FFat.open("/firmware.bin");
+  if (firmware) {
+    Serial.println(F("found!"));
+    Serial.println(F("Try to update!"));
+
+    //Update.onProgress(progressHandler);
+    Update.begin(firmware.size(), U_FLASH);
+    Update.writeStream(firmware);
+    if (Update.end()) {
+      Serial.println(F("Update finished!"));
+    } else {
+      Serial.println(F("Update error!"));
+      Serial.println(Update.getError());
+    }
+
+    firmware.close();
+
+    if (FFat.rename("/firmware.bin", "/firmware.bak")) {
+      Serial.println(F("Firmware rename succesfully!"));
+    } else {
+      Serial.println(F("Firmware rename error!"));
+    }
+    delay(2000);
+
+    ESP.restart();
+  }
 }
 
 // list all of the files, if ishtml=true, return html rather than simple text
