@@ -94,3 +94,15 @@ Example-02 is more complete and offers a better user experience, with this examp
   <img src="https://raw.githubusercontent.com/rtek1000/esp32-asyncwebserver-fileupload-example/master/example-02/images/example-02-image-03.png" width="200">
   <img src="https://raw.githubusercontent.com/rtek1000/esp32-asyncwebserver-fileupload-example/master/example-02/images/example-02-image-04.png" width="200">
 </p>
+
+
+## Example 6 (Example 5, but without Authentication) - Single Webpage, File Management, Upload with Progress Bar
+- single webpage
+- file listing button
+- file download button
+- file delete button
+- file upload button
+- reboot esp32 button
+- all done on a single web page that updates webpage elements using javascript
+- FatFS
+
